@@ -47,7 +47,7 @@ import scala.reflect.internal.Trees.If;
 import scala.reflect.internal.Trees.This;
 
 public class Wire extends BlockEnergyTileEntity<WireTile>{
-	//Каждое свойство отвечает за то, подключен ли к этой стороне провод или другой участник цепи(true/false)
+	//РљР°Р¶РґРѕРµ СЃРІРѕР№СЃС‚РІРѕ РѕС‚РІРµС‡Р°РµС‚ Р·Р° С‚Рѕ, РїРѕРґРєР»СЋС‡РµРЅ Р»Рё Рє СЌС‚РѕР№ СЃС‚РѕСЂРѕРЅРµ РїСЂРѕРІРѕРґ РёР»Рё РґСЂСѓРіРѕР№ СѓС‡Р°СЃС‚РЅРёРє С†РµРїРё(true/false)
 	public static final PropertyBool DOWN = PropertyBool.create("down");
 	public static final PropertyBool UP = PropertyBool.create("up");
 	public static final PropertyBool NORTH = PropertyBool.create("north");
@@ -62,54 +62,54 @@ public class Wire extends BlockEnergyTileEntity<WireTile>{
 		this.setCreativeTab(CommonProxy.redstone_things_tab);
 	}
 	
-	//Метод "строящий" сеть, передаем в него мир и стартовую позицию
+	//РњРµС‚РѕРґ "СЃС‚СЂРѕСЏС‰РёР№" СЃРµС‚СЊ, РїРµСЂРµРґР°РµРј РІ РЅРµРіРѕ РјРёСЂ Рё СЃС‚Р°СЂС‚РѕРІСѓСЋ РїРѕР·РёС†РёСЋ
 	@Deprecated
 	public ArrayList<BlockPos> buildNetwork(IBlockAccess worldIn, BlockPos start) {
-		HashSet<BlockPos> checked = new HashSet<>(); //список проверенных блоков
-		ArrayList<BlockPos> generators = new ArrayList<>();//список генераторов, которые будут найдены в сети
-		ArrayList<BlockPos> storages = new ArrayList<>();//список проводов, которые будут найдены в сети
-		ArrayDeque<BlockPos> queue = new ArrayDeque<>(100);//Очередь, это особенность реализации алгоритма поиска в ширину.
+		HashSet<BlockPos> checked = new HashSet<>(); //СЃРїРёСЃРѕРє РїСЂРѕРІРµСЂРµРЅРЅС‹С… Р±Р»РѕРєРѕРІ
+		ArrayList<BlockPos> generators = new ArrayList<>();//СЃРїРёСЃРѕРє РіРµРЅРµСЂР°С‚РѕСЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ РЅР°Р№РґРµРЅС‹ РІ СЃРµС‚Рё
+		ArrayList<BlockPos> storages = new ArrayList<>();//СЃРїРёСЃРѕРє РїСЂРѕРІРѕРґРѕРІ, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ РЅР°Р№РґРµРЅС‹ РІ СЃРµС‚Рё
+		ArrayDeque<BlockPos> queue = new ArrayDeque<>(100);//РћС‡РµСЂРµРґСЊ, СЌС‚Рѕ РѕСЃРѕР±РµРЅРЅРѕСЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё Р°Р»РіРѕСЂРёС‚РјР° РїРѕРёСЃРєР° РІ С€РёСЂРёРЅСѓ.
 		
-		queue.offer(start);//Добавляем стартовую позицию в очередь
-		checked.add(start);//И сразу добавляем в проверенные
-		while (!queue.isEmpty()) {//Выполняем пока очередь не пуста
-			BlockPos nPos = queue.poll();//Этот метод возвращает объект из головы очереди и сразу его удаляет.
-			//Проверяем не генератор ли стартовая позиция.
+		queue.offer(start);//Р”РѕР±Р°РІР»СЏРµРј СЃС‚Р°СЂС‚РѕРІСѓСЋ РїРѕР·РёС†РёСЋ РІ РѕС‡РµСЂРµРґСЊ
+		checked.add(start);//Р СЃСЂР°Р·Сѓ РґРѕР±Р°РІР»СЏРµРј РІ РїСЂРѕРІРµСЂРµРЅРЅС‹Рµ
+		while (!queue.isEmpty()) {//Р’С‹РїРѕР»РЅСЏРµРј РїРѕРєР° РѕС‡РµСЂРµРґСЊ РЅРµ РїСѓСЃС‚Р°
+			BlockPos nPos = queue.poll();//Р­С‚РѕС‚ РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РѕР±СЉРµРєС‚ РёР· РіРѕР»РѕРІС‹ РѕС‡РµСЂРµРґРё Рё СЃСЂР°Р·Сѓ РµРіРѕ СѓРґР°Р»СЏРµС‚.
+			//РџСЂРѕРІРµСЂСЏРµРј РЅРµ РіРµРЅРµСЂР°С‚РѕСЂ Р»Рё СЃС‚Р°СЂС‚РѕРІР°СЏ РїРѕР·РёС†РёСЏ.
 			TileEntity tile = worldIn.getTileEntity(nPos);
 			if(tile != null) {
-				if(tile.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null)) {// У меня свои капы на генератор и хранилище
+				if(tile.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null)) {// РЈ РјРµРЅСЏ СЃРІРѕРё РєР°РїС‹ РЅР° РіРµРЅРµСЂР°С‚РѕСЂ Рё С…СЂР°РЅРёР»РёС‰Рµ
 					generators.add(nPos);
 				}
 			}
-			for (EnumFacing face : EnumFacing.VALUES) {//Циклом прогоняемся по всем возможным "направлением"(не знаю как лучше перевести
-				BlockPos child = nPos.offset(face);//эта функция возвращает позицию со сдвигом в данном направлении
-				TileEntity tileEntity = worldIn.getTileEntity(child);//получаем тайл
+			for (EnumFacing face : EnumFacing.VALUES) {//Р¦РёРєР»РѕРј РїСЂРѕРіРѕРЅСЏРµРјСЃСЏ РїРѕ РІСЃРµРј РІРѕР·РјРѕР¶РЅС‹Рј "РЅР°РїСЂР°РІР»РµРЅРёРµРј"(РЅРµ Р·РЅР°СЋ РєР°Рє Р»СѓС‡С€Рµ РїРµСЂРµРІРµСЃС‚Рё
+				BlockPos child = nPos.offset(face);//СЌС‚Р° С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїРѕР·РёС†РёСЋ СЃРѕ СЃРґРІРёРіРѕРј РІ РґР°РЅРЅРѕРј РЅР°РїСЂР°РІР»РµРЅРёРё
+				TileEntity tileEntity = worldIn.getTileEntity(child);//РїРѕР»СѓС‡Р°РµРј С‚Р°Р№Р»
 				if(tileEntity != null) {
-					//проверяем, что это, генератор или хранилище
+					//РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ СЌС‚Рѕ, РіРµРЅРµСЂР°С‚РѕСЂ РёР»Рё С…СЂР°РЅРёР»РёС‰Рµ
 					if(tileEntity.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null)) {
-						generators.add(child); // и добовлеям их в соответственные списки
+						generators.add(child); // Рё РґРѕР±РѕРІР»РµСЏРј РёС… РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅС‹Рµ СЃРїРёСЃРєРё
 					}
 					if(tileEntity.hasCapability(EnergyStorageCapability.ENERGY_STORAGE, null)) {
-						storages.add(child);// и добовлеям их в соответственные списки
+						storages.add(child);// Рё РґРѕР±РѕРІР»РµСЏРј РёС… РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅС‹Рµ СЃРїРёСЃРєРё
 					}
 				}
-				//Если в списке проверенных нету этой позиции и блок на этой позиции - это провод, добавляем в список
-				//проверенных + в очередь, чтобы с этой позиции проверить уже другие блоки
+				//Р•СЃР»Рё РІ СЃРїРёСЃРєРµ РїСЂРѕРІРµСЂРµРЅРЅС‹С… РЅРµС‚Сѓ СЌС‚РѕР№ РїРѕР·РёС†РёРё Рё Р±Р»РѕРє РЅР° СЌС‚РѕР№ РїРѕР·РёС†РёРё - СЌС‚Рѕ РїСЂРѕРІРѕРґ, РґРѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє
+				//РїСЂРѕРІРµСЂРµРЅРЅС‹С… + РІ РѕС‡РµСЂРµРґСЊ, С‡С‚РѕР±С‹ СЃ СЌС‚РѕР№ РїРѕР·РёС†РёРё РїСЂРѕРІРµСЂРёС‚СЊ СѓР¶Рµ РґСЂСѓРіРёРµ Р±Р»РѕРєРё
 				if(!checked.contains(child) && worldIn.getBlockState(child).getBlock() instanceof Wire) {
 					checked.add(child);
-					queue.addLast(child);//Добавляем в низ очереди
+					queue.addLast(child);//Р”РѕР±Р°РІР»СЏРµРј РІ РЅРёР· РѕС‡РµСЂРµРґРё
 				}
 			}	
 		}
 		
-		if(!generators.isEmpty()) {//Если есть в сети  генераторы
-			for (int i = 0; i < generators.size(); i++) {//прогоняемся по ним циклом
+		if(!generators.isEmpty()) {//Р•СЃР»Рё РµСЃС‚СЊ РІ СЃРµС‚Рё  РіРµРЅРµСЂР°С‚РѕСЂС‹
+			for (int i = 0; i < generators.size(); i++) {//РїСЂРѕРіРѕРЅСЏРµРјСЃСЏ РїРѕ РЅРёРј С†РёРєР»РѕРј
 				BlockPos gPos = generators.get(i);
 				TileEntity tileEntity = worldIn.getTileEntity(gPos);
 				if(tileEntity != null && tileEntity instanceof GeneratorTile) {
-					//Проверяем, что они наследают спец класс GeneratorTile, нижке под спойлером есть этот класс
+					//РџСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РѕРЅРё РЅР°СЃР»РµРґР°СЋС‚ СЃРїРµС† РєР»Р°СЃСЃ GeneratorTile, РЅРёР¶РєРµ РїРѕРґ СЃРїРѕР№Р»РµСЂРѕРј РµСЃС‚СЊ СЌС‚РѕС‚ РєР»Р°СЃСЃ
 					GeneratorTile generator = (GeneratorTile) tileEntity;
-					generator.setStorages(storages);//устонавливаем в этот генератор список найденных в сети хранилищ
+					generator.setStorages(storages);//СѓСЃС‚РѕРЅР°РІР»РёРІР°РµРј РІ СЌС‚РѕС‚ РіРµРЅРµСЂР°С‚РѕСЂ СЃРїРёСЃРѕРє РЅР°Р№РґРµРЅРЅС‹С… РІ СЃРµС‚Рё С…СЂР°РЅРёР»РёС‰
 				}
 			}
 		}
@@ -130,7 +130,7 @@ public class Wire extends BlockEnergyTileEntity<WireTile>{
 		if(playerIn.getHeldItem(hand) != ItemStack.EMPTY && playerIn.getHeldItem(hand).getItem() == Items.APPLE) {
 			cleanNetwork(worldIn);
 		}
-		TileEntity tileEntity = worldIn.getTileEntity(pos);//получаем тайл
+		TileEntity tileEntity = worldIn.getTileEntity(pos);//РїРѕР»СѓС‡Р°РµРј С‚Р°Р№Р»
 		if(tileEntity != null && tileEntity instanceof NetworkParticipantTile) {
 			NetworkParticipantTile participant = (NetworkParticipantTile) tileEntity;
 			System.out.println("Participant id is:" + participant.getNetworkId());
@@ -151,26 +151,26 @@ public class Wire extends BlockEnergyTileEntity<WireTile>{
 	
 	@Override
 	public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
-		//BlockPos позиция одного из участников, для удобства. От неё запустим алгоритм, который поставит айдишники
+		//BlockPos РїРѕР·РёС†РёСЏ РѕРґРЅРѕРіРѕ РёР· СѓС‡Р°СЃС‚РЅРёРєРѕРІ, РґР»СЏ СѓРґРѕР±СЃС‚РІР°. РћС‚ РЅРµС‘ Р·Р°РїСѓСЃС‚РёРј Р°Р»РіРѕСЂРёС‚Рј, РєРѕС‚РѕСЂС‹Р№ РїРѕСЃС‚Р°РІРёС‚ Р°Р№РґРёС€РЅРёРєРё
 		//EnergyNetworkUtil.breakWire(worldIn, pos);
 	}
 
-	//Это метод нужен для проверки можем ли мы текстуркой "соедениться" с другим блоком
+	//Р­С‚Рѕ РјРµС‚РѕРґ РЅСѓР¶РµРЅ РґР»СЏ РїСЂРѕРІРµСЂРєРё РјРѕР¶РµРј Р»Рё РјС‹ С‚РµРєСЃС‚СѓСЂРєРѕР№ "СЃРѕРµРґРµРЅРёС‚СЊСЃСЏ" СЃ РґСЂСѓРіРёРј Р±Р»РѕРєРѕРј
 	public boolean canConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing){
 		BlockPos child = pos.offset(facing);
 		TileEntity tileEntity = world.getTileEntity(child);
 		if(tileEntity != null) {
 			if(tileEntity.hasCapability(EnergyStorageCapability.ENERGY_STORAGE, null)) {
-				//если генератор - да
+				//РµСЃР»Рё РіРµРЅРµСЂР°С‚РѕСЂ - РґР°
 				return true;
 			}
 			if(tileEntity.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null)) {
-				//если хранилище - да
+				//РµСЃР»Рё С…СЂР°РЅРёР»РёС‰Рµ - РґР°
 				return true;
 			}
 		}
 		if(world.getBlockState(child).getBlock() instanceof Wire) {
-			//если провод - да
+			//РµСЃР»Рё РїСЂРѕРІРѕРґ - РґР°
 			return true;
 		}
 		return false;
@@ -180,7 +180,7 @@ public class Wire extends BlockEnergyTileEntity<WireTile>{
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox,
 			List<AxisAlignedBB> collidingBoxes, Entity entityIn, boolean isActualState) {
-		//В зависимости от того, какие стороны подключены, выставляем определенную коллизию
+		//Р’ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, РєР°РєРёРµ СЃС‚РѕСЂРѕРЅС‹ РїРѕРґРєР»СЋС‡РµРЅС‹, РІС‹СЃС‚Р°РІР»СЏРµРј РѕРїСЂРµРґРµР»РµРЅРЅСѓСЋ РєРѕР»Р»РёР·РёСЋ
 		if (canConnectTo(world, pos, EnumFacing.UP)) {
 			addCollisionBoxToList(pos, entityBox, collidingBoxes,
 					new AxisAlignedBB(0.377, 0, 0.377, 0.623D, 0.623D, 0.623D));
@@ -209,7 +209,7 @@ public class Wire extends BlockEnergyTileEntity<WireTile>{
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
-		// Тоже самое, что и с коллизией
+		// РўРѕР¶Рµ СЃР°РјРѕРµ, С‡С‚Рѕ Рё СЃ РєРѕР»Р»РёР·РёРµР№
 		double[] sidebound = new double[6];
 		sidebound[0]=sidebound[1]=sidebound[2]=0.377D;
 		sidebound[3]=sidebound[4]=sidebound[5]=0.6231D;
@@ -238,14 +238,14 @@ public class Wire extends BlockEnergyTileEntity<WireTile>{
 	
 	@Override
 	protected BlockStateContainer createBlockState() {
-		//Создаем контейнер для наших "свойств"
+		//РЎРѕР·РґР°РµРј РєРѕРЅС‚РµР№РЅРµСЂ РґР»СЏ РЅР°С€РёС… "СЃРІРѕР№СЃС‚РІ"
 		return new BlockStateContainer(this, UP, DOWN, NORTH, SOUTH, WEST, EAST);
 	}
 	
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		//Пользуясь методом просто устанавливаем true/false свойствам
-		// С помощью этого мы будем рендерить(или нет) частичку кабеля с определенной стороны.
+		//РџРѕР»СЊР·СѓСЏСЃСЊ РјРµС‚РѕРґРѕРј РїСЂРѕСЃС‚Рѕ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј true/false СЃРІРѕР№СЃС‚РІР°Рј
+		// РЎ РїРѕРјРѕС‰СЊСЋ СЌС‚РѕРіРѕ РјС‹ Р±СѓРґРµРј СЂРµРЅРґРµСЂРёС‚СЊ(РёР»Рё РЅРµС‚) С‡Р°СЃС‚РёС‡РєСѓ РєР°Р±РµР»СЏ СЃ РѕРїСЂРµРґРµР»РµРЅРЅРѕР№ СЃС‚РѕСЂРѕРЅС‹.
 		return state
 		.withProperty(DOWN, canConnectTo(world, pos, EnumFacing.DOWN))
 		.withProperty(UP, canConnectTo(world, pos, EnumFacing.UP))

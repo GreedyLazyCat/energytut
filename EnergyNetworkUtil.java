@@ -26,21 +26,21 @@ import net.minecraft.world.World;
 
 public class EnergyNetworkUtil {
 	public static void buildNetwork(World world, BlockPos start) {
-		HashSet<BlockPos> checked = new HashSet<>(); //список проверенных блоков
-		HashSet<BlockPos> participants = new HashSet<>();//список генераторов, которые будут найдены в сети
-		ArrayDeque<BlockPos> queue = new ArrayDeque<>(100);//Очередь, это особенность реализации алгоритма поиска в ширину.
+		HashSet<BlockPos> checked = new HashSet<>(); //СЃРїРёСЃРѕРє РїСЂРѕРІРµСЂРµРЅРЅС‹С… Р±Р»РѕРєРѕРІ
+		HashSet<BlockPos> participants = new HashSet<>();//СЃРїРёСЃРѕРє РіРµРЅРµСЂР°С‚РѕСЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ РЅР°Р№РґРµРЅС‹ РІ СЃРµС‚Рё
+		ArrayDeque<BlockPos> queue = new ArrayDeque<>(100);//РћС‡РµСЂРµРґСЊ, СЌС‚Рѕ РѕСЃРѕР±РµРЅРЅРѕСЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё Р°Р»РіРѕСЂРёС‚РјР° РїРѕРёСЃРєР° РІ С€РёСЂРёРЅСѓ.
 		
 		
-		queue.offer(start);//Добавляем стартовую позицию в очередь
-		checked.add(start);//И сразу добавляем в проверенные
-		while (!queue.isEmpty()) {//Выполняем пока очередь не пуста
-			BlockPos nPos = queue.poll();//Этот метод возвращает объект из головы очереди и сразу его удаляет.
-			//Проверяем не генератор ли стартовая позиция.
+		queue.offer(start);//Р”РѕР±Р°РІР»СЏРµРј СЃС‚Р°СЂС‚РѕРІСѓСЋ РїРѕР·РёС†РёСЋ РІ РѕС‡РµСЂРµРґСЊ
+		checked.add(start);//Р СЃСЂР°Р·Сѓ РґРѕР±Р°РІР»СЏРµРј РІ РїСЂРѕРІРµСЂРµРЅРЅС‹Рµ
+		while (!queue.isEmpty()) {//Р’С‹РїРѕР»РЅСЏРµРј РїРѕРєР° РѕС‡РµСЂРµРґСЊ РЅРµ РїСѓСЃС‚Р°
+			BlockPos nPos = queue.poll();//Р­С‚РѕС‚ РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РѕР±СЉРµРєС‚ РёР· РіРѕР»РѕРІС‹ РѕС‡РµСЂРµРґРё Рё СЃСЂР°Р·Сѓ РµРіРѕ СѓРґР°Р»СЏРµС‚.
+			//РџСЂРѕРІРµСЂСЏРµРј РЅРµ РіРµРЅРµСЂР°С‚РѕСЂ Р»Рё СЃС‚Р°СЂС‚РѕРІР°СЏ РїРѕР·РёС†РёСЏ.
 			TileEntity tile = world.getTileEntity(nPos);
 			boolean generator = false;
 			boolean storage = false;
-			//Здесь мы просто провереям, что полученная позиция - это генератор или хранилище и записываем в переменные
-			//Это нам понадобиться позже
+			//Р—РґРµСЃСЊ РјС‹ РїСЂРѕСЃС‚Рѕ РїСЂРѕРІРµСЂРµСЏРј, С‡С‚Рѕ РїРѕР»СѓС‡РµРЅРЅР°СЏ РїРѕР·РёС†РёСЏ - СЌС‚Рѕ РіРµРЅРµСЂР°С‚РѕСЂ РёР»Рё С…СЂР°РЅРёР»РёС‰Рµ Рё Р·Р°РїРёСЃС‹РІР°РµРј РІ РїРµСЂРµРјРµРЅРЅС‹Рµ
+			//Р­С‚Рѕ РЅР°Рј РїРѕРЅР°РґРѕР±РёС‚СЊСЃСЏ РїРѕР·Р¶Рµ
 			if(tile != null) {
 				generator = tile.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null);
 				storage = tile.hasCapability(EnergyStorageCapability.ENERGY_STORAGE, null);
@@ -51,14 +51,14 @@ public class EnergyNetworkUtil {
 					participants.add(nPos);
 				}
 			}
-			for (EnumFacing face : EnumFacing.VALUES) {//Циклом прогоняемся по всем возможным "направлением"(не знаю как лучше перевести
-				BlockPos child = nPos.offset(face);//эта функция возвращает позицию со сдвигом в данном направлении
-				TileEntity tileEntity = world.getTileEntity(child);//получаем тайл
+			for (EnumFacing face : EnumFacing.VALUES) {//Р¦РёРєР»РѕРј РїСЂРѕРіРѕРЅСЏРµРјСЃСЏ РїРѕ РІСЃРµРј РІРѕР·РјРѕР¶РЅС‹Рј "РЅР°РїСЂР°РІР»РµРЅРёРµРј"(РЅРµ Р·РЅР°СЋ РєР°Рє Р»СѓС‡С€Рµ РїРµСЂРµРІРµСЃС‚Рё
+				BlockPos child = nPos.offset(face);//СЌС‚Р° С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїРѕР·РёС†РёСЋ СЃРѕ СЃРґРІРёРіРѕРј РІ РґР°РЅРЅРѕРј РЅР°РїСЂР°РІР»РµРЅРёРё
+				TileEntity tileEntity = world.getTileEntity(child);//РїРѕР»СѓС‡Р°РµРј С‚Р°Р№Р»
 				boolean generator_child = false;
 				boolean storage_child = false;
 				if(!checked.contains(child)) {
 					NetworkParticipantTile participant = null;
-					//Здесь мы проверяем, что соседние блоки - это генератор или хранилище
+					//Р—РґРµСЃСЊ РјС‹ РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ СЃРѕСЃРµРґРЅРёРµ Р±Р»РѕРєРё - СЌС‚Рѕ РіРµРЅРµСЂР°С‚РѕСЂ РёР»Рё С…СЂР°РЅРёР»РёС‰Рµ
 					if(tileEntity != null) {
 						if(tileEntity instanceof NetworkParticipantTile) {
 							participant = (NetworkParticipantTile) tileEntity;
@@ -66,22 +66,22 @@ public class EnergyNetworkUtil {
 						generator_child = tileEntity.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null);
 						storage_child = tileEntity.hasCapability(EnergyStorageCapability.ENERGY_STORAGE, null);
 					}
-					//если провод - добавляем в очередь
+					//РµСЃР»Рё РїСЂРѕРІРѕРґ - РґРѕР±Р°РІР»СЏРµРј РІ РѕС‡РµСЂРµРґСЊ
 					if(world.getBlockState(child).getBlock() instanceof Wire) {
 						checked.add(child);
 						queue.addLast(child);
 					}
-					//Если соседний блок генератор и родительский(тот от которого мы "шагаем" в сторону) не генератор
+					//Р•СЃР»Рё СЃРѕСЃРµРґРЅРёР№ Р±Р»РѕРє РіРµРЅРµСЂР°С‚РѕСЂ Рё СЂРѕРґРёС‚РµР»СЊСЃРєРёР№(С‚РѕС‚ РѕС‚ РєРѕС‚РѕСЂРѕРіРѕ РјС‹ "С€Р°РіР°РµРј" РІ СЃС‚РѕСЂРѕРЅСѓ) РЅРµ РіРµРЅРµСЂР°С‚РѕСЂ
 					if (generator_child && !generator) {
 						checked.add(child);
 						queue.addLast(child);
 					}
-					//Соседний блок - хранилище и родительский не хранилище
+					//РЎРѕСЃРµРґРЅРёР№ Р±Р»РѕРє - С…СЂР°РЅРёР»РёС‰Рµ Рё СЂРѕРґРёС‚РµР»СЊСЃРєРёР№ РЅРµ С…СЂР°РЅРёР»РёС‰Рµ
 					if(storage_child && !storage) {
 						checked.add(child);
 						queue.addLast(child);
 					}
-					//Если родительский блок генератор и соседний блок - хранилище
+					//Р•СЃР»Рё СЂРѕРґРёС‚РµР»СЊСЃРєРёР№ Р±Р»РѕРє РіРµРЅРµСЂР°С‚РѕСЂ Рё СЃРѕСЃРµРґРЅРёР№ Р±Р»РѕРє - С…СЂР°РЅРёР»РёС‰Рµ
 					if(generator && storage_child) {
 						checked.add(child);
 						queue.addLast(child);
@@ -89,16 +89,16 @@ public class EnergyNetworkUtil {
 				}
 			}
 		}
-		if(!participants.isEmpty()) { // Участники не пусты
-			//Создаем экзэмпляр сети и устанавливаем найденные генераторы и хранилища
+		if(!participants.isEmpty()) { // РЈС‡Р°СЃС‚РЅРёРєРё РЅРµ РїСѓСЃС‚С‹
+			//РЎРѕР·РґР°РµРј СЌРєР·СЌРјРїР»СЏСЂ СЃРµС‚Рё Рё СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅР°Р№РґРµРЅРЅС‹Рµ РіРµРЅРµСЂР°С‚РѕСЂС‹ Рё С…СЂР°РЅРёР»РёС‰Р°
 			EnergyNetwork network = new EnergyNetwork();
 			network.setParticipants(participants);
-			//Получаем список сетей 
+			//РџРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє СЃРµС‚РµР№ 
 			EnergyNetworkList list = getEnergyNetworkList(world);
 			if(list != null) {
-				//И добавляем туда сеть
+				//Р РґРѕР±Р°РІР»СЏРµРј С‚СѓРґР° СЃРµС‚СЊ
 				int id = list.addNetwork(network);
-				//Потом запускаем метод который выставит id всей сети
+				//РџРѕС‚РѕРј Р·Р°РїСѓСЃРєР°РµРј РјРµС‚РѕРґ РєРѕС‚РѕСЂС‹Р№ РІС‹СЃС‚Р°РІРёС‚ id РІСЃРµР№ СЃРµС‚Рё
 				setNetworkId(world, start, id);
 			}
 		}else {
@@ -107,14 +107,14 @@ public class EnergyNetworkUtil {
 	}
 	
 	public static void setNetworkId(World world, BlockPos start, int id) {
-		HashSet<BlockPos> checked = new HashSet<>(); //список проверенных блоков
-		ArrayDeque<BlockPos> queue = new ArrayDeque<>(100);//Очередь, это особенность реализации алгоритма поиска в ширину.
+		HashSet<BlockPos> checked = new HashSet<>(); //СЃРїРёСЃРѕРє РїСЂРѕРІРµСЂРµРЅРЅС‹С… Р±Р»РѕРєРѕРІ
+		ArrayDeque<BlockPos> queue = new ArrayDeque<>(100);//РћС‡РµСЂРµРґСЊ, СЌС‚Рѕ РѕСЃРѕР±РµРЅРЅРѕСЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё Р°Р»РіРѕСЂРёС‚РјР° РїРѕРёСЃРєР° РІ С€РёСЂРёРЅСѓ.
 		
-		queue.offer(start);//Добавляем стартовую позицию в очередь
-		checked.add(start);//И сразу добавляем в проверенные
+		queue.offer(start);//Р”РѕР±Р°РІР»СЏРµРј СЃС‚Р°СЂС‚РѕРІСѓСЋ РїРѕР·РёС†РёСЋ РІ РѕС‡РµСЂРµРґСЊ
+		checked.add(start);//Р СЃСЂР°Р·Сѓ РґРѕР±Р°РІР»СЏРµРј РІ РїСЂРѕРІРµСЂРµРЅРЅС‹Рµ
 		while (!queue.isEmpty()) {
-			/* <Так же как ив buildNetwork> */
-			//Только вместо того, чтобы записывать в участники мы устанавливаем участникам id(проводам тоже)
+			/* <РўР°Рє Р¶Рµ РєР°Рє РёРІ buildNetwork> */
+			//РўРѕР»СЊРєРѕ РІРјРµСЃС‚Рѕ С‚РѕРіРѕ, С‡С‚РѕР±С‹ Р·Р°РїРёСЃС‹РІР°С‚СЊ РІ СѓС‡Р°СЃС‚РЅРёРєРё РјС‹ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СѓС‡Р°СЃС‚РЅРёРєР°Рј id(РїСЂРѕРІРѕРґР°Рј С‚РѕР¶Рµ)
 			BlockPos nPos = queue.poll();
 			TileEntity tile = world.getTileEntity(nPos);
 			boolean generator = false;
@@ -147,7 +147,7 @@ public class EnergyNetworkUtil {
 						queue.addLast(child);
 					}
 					if (generator_child && !generator) {
-						if(participant != null) participant.setNetworkId(id);//Ставим id
+						if(participant != null) participant.setNetworkId(id);//РЎС‚Р°РІРёРј id
 						checked.add(child);
 						queue.addLast(child);
 					}
@@ -163,25 +163,25 @@ public class EnergyNetworkUtil {
 					}
 				}
 			}
-			/* </Так же как ив buildNetwork> */
+			/* </РўР°Рє Р¶Рµ РєР°Рє РёРІ buildNetwork> */
 		}
 	}
 	
 	public static void checkAround(World world, BlockPos pos) {
-		HashSet<Integer> ids = new HashSet(1);// Список найденных id вокруг
-		HashSet<NetworkParticipantTile> no_ids = new HashSet(1);// Список позиций у которых отсутствует id
-		//Получаем tile и записываем в переменную генератор ли это или хранилище
+		HashSet<Integer> ids = new HashSet(1);// РЎРїРёСЃРѕРє РЅР°Р№РґРµРЅРЅС‹С… id РІРѕРєСЂСѓРі
+		HashSet<NetworkParticipantTile> no_ids = new HashSet(1);// РЎРїРёСЃРѕРє РїРѕР·РёС†РёР№ Сѓ РєРѕС‚РѕСЂС‹С… РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ id
+		//РџРѕР»СѓС‡Р°РµРј tile Рё Р·Р°РїРёСЃС‹РІР°РµРј РІ РїРµСЂРµРјРµРЅРЅСѓСЋ РіРµРЅРµСЂР°С‚РѕСЂ Р»Рё СЌС‚Рѕ РёР»Рё С…СЂР°РЅРёР»РёС‰Рµ
 		TileEntity start = world.getTileEntity(pos);
 		boolean generator = start.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null);
 		boolean storage = start.hasCapability(EnergyStorageCapability.ENERGY_STORAGE, null);
-		//Здесь будет храниться id сети 
-		int this_id = -1;// -1 значит, что сети нет
+		//Р—РґРµСЃСЊ Р±СѓРґРµС‚ С…СЂР°РЅРёС‚СЊСЃСЏ id СЃРµС‚Рё 
+		int this_id = -1;// -1 Р·РЅР°С‡РёС‚, С‡С‚Рѕ СЃРµС‚Рё РЅРµС‚
 		EnergyNetworkList list = getEnergyNetworkList(world);
-		//Если генератор то строим сеть т.к. генератор главный в сети. 
+		//Р•СЃР»Рё РіРµРЅРµСЂР°С‚РѕСЂ С‚Рѕ СЃС‚СЂРѕРёРј СЃРµС‚СЊ С‚.Рє. РіРµРЅРµСЂР°С‚РѕСЂ РіР»Р°РІРЅС‹Р№ РІ СЃРµС‚Рё. 
 		if(generator) {
 			buildNetwork(world, pos);
 		}
-		// Проверяем все соседние блоки
+		// РџСЂРѕРІРµСЂСЏРµРј РІСЃРµ СЃРѕСЃРµРґРЅРёРµ Р±Р»РѕРєРё
 		for(EnumFacing facing : EnumFacing.VALUES) {
 			BlockPos child = pos.offset(facing);
 			TileEntity tile = world.getTileEntity(child);
@@ -190,8 +190,8 @@ public class EnergyNetworkUtil {
 				boolean tile_generator = tile.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null);
 				boolean tile_storage = tile.hasCapability(EnergyStorageCapability.ENERGY_STORAGE, null);
 				NetworkParticipantTile participant = (NetworkParticipantTile) tile;
-				/* Так же, как и в buildNetwork выполняем проверки и в зависимости от того 
-				 * есть ли у блока id сети или нет, добавляем в нужный список */
+				/* РўР°Рє Р¶Рµ, РєР°Рє Рё РІ buildNetwork РІС‹РїРѕР»РЅСЏРµРј РїСЂРѕРІРµСЂРєРё Рё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ 
+				 * РµСЃС‚СЊ Р»Рё Сѓ Р±Р»РѕРєР° id СЃРµС‚Рё РёР»Рё РЅРµС‚, РґРѕР±Р°РІР»СЏРµРј РІ РЅСѓР¶РЅС‹Р№ СЃРїРёСЃРѕРє */
 				if(generator && !tile_generator) {
 					if(participant.hasNetworkId()) {
 						ids.add(participant.getNetworkId());
@@ -220,41 +220,41 @@ public class EnergyNetworkUtil {
 			}
 			
 		}
-		//Конвертируем в массивы для удобства
+		//РљРѕРЅРІРµСЂС‚РёСЂСѓРµРј РІ РјР°СЃСЃРёРІС‹ РґР»СЏ СѓРґРѕР±СЃС‚РІР°
 		Integer[] ids_arr = ids.toArray(new Integer[ids.size()]);
 		NetworkParticipantTile[] no_ids_arr = no_ids.toArray(new NetworkParticipantTile[no_ids.size()]);
 		
-		//Если мы нашли больше двух айдишников, значит у нас две сети и их нудно соеденить
-		//HashSet поидее не позволит записать два одинаковых id
+		//Р•СЃР»Рё РјС‹ РЅР°С€Р»Рё Р±РѕР»СЊС€Рµ РґРІСѓС… Р°Р№РґРёС€РЅРёРєРѕРІ, Р·РЅР°С‡РёС‚ Сѓ РЅР°СЃ РґРІРµ СЃРµС‚Рё Рё РёС… РЅСѓРґРЅРѕ СЃРѕРµРґРµРЅРёС‚СЊ
+		//HashSet РїРѕРёРґРµРµ РЅРµ РїРѕР·РІРѕР»РёС‚ Р·Р°РїРёСЃР°С‚СЊ РґРІР° РѕРґРёРЅР°РєРѕРІС‹С… id
 		if(ids_arr.length>1) {
-			//Сюда мы соберем вместе все найденные сети
+			//РЎСЋРґР° РјС‹ СЃРѕР±РµСЂРµРј РІРјРµСЃС‚Рµ РІСЃРµ РЅР°Р№РґРµРЅРЅС‹Рµ СЃРµС‚Рё
 			HashSet<BlockPos> result = new HashSet<>();
 			if(list != null) {
 				for (int i = 0; i < ids_arr.length; i++) {
 					if(list.getNetwork(ids_arr[i]) != null) {
-						//Добавляем всех участников сети из списка
+						//Р”РѕР±Р°РІР»СЏРµРј РІСЃРµС… СѓС‡Р°СЃС‚РЅРёРєРѕРІ СЃРµС‚Рё РёР· СЃРїРёСЃРєР°
 						result.addAll(list.getNetwork(ids_arr[i]).getParticipants());
-						//И удаляем сеть т.к. мы будем объеденять и нам она будет ненужна
+						//Р СѓРґР°Р»СЏРµРј СЃРµС‚СЊ С‚.Рє. РјС‹ Р±СѓРґРµРј РѕР±СЉРµРґРµРЅСЏС‚СЊ Рё РЅР°Рј РѕРЅР° Р±СѓРґРµС‚ РЅРµРЅСѓР¶РЅР°
 						list.removeNetwork(ids_arr[i]);
 					}
 				}
 			}
-			//Создаем сеть из собранных
+			//РЎРѕР·РґР°РµРј СЃРµС‚СЊ РёР· СЃРѕР±СЂР°РЅРЅС‹С…
 			int new_id = list.addNetwork(new EnergyNetwork(result));
-			//И выставляем id новой сети
+			//Р РІС‹СЃС‚Р°РІР»СЏРµРј id РЅРѕРІРѕР№ СЃРµС‚Рё
 			setNetworkId(world, pos, new_id);
 		}
-		//Если id только 1
+		//Р•СЃР»Рё id С‚РѕР»СЊРєРѕ 1
 		else if (!ids.isEmpty() && ids_arr.length == 1) {
 			TileEntity tile = world.getTileEntity(pos);
 			this_id = ids_arr[0];
 			if(tile != null) {
-				//Если это участник сети просто ставим ему id
+				//Р•СЃР»Рё СЌС‚Рѕ СѓС‡Р°СЃС‚РЅРёРє СЃРµС‚Рё РїСЂРѕСЃС‚Рѕ СЃС‚Р°РІРёРј РµРјСѓ id
 				if(tile instanceof NetworkParticipantTile) {
 					NetworkParticipantTile participant = (NetworkParticipantTile) tile;
 					participant.setNetworkId(this_id);
 				}
-				//+Если это генератор или хранилище добавляем в найденную сеть
+				//+Р•СЃР»Рё СЌС‚Рѕ РіРµРЅРµСЂР°С‚РѕСЂ РёР»Рё С…СЂР°РЅРёР»РёС‰Рµ РґРѕР±Р°РІР»СЏРµРј РІ РЅР°Р№РґРµРЅРЅСѓСЋ СЃРµС‚СЊ
 				if(tile.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null) || 
 						tile.hasCapability(EnergyStorageCapability.ENERGY_STORAGE, null)) {
 					if(list != null && list.getNetwork(this_id) != null){
@@ -263,18 +263,18 @@ public class EnergyNetworkUtil {
 				}
 			}
 		}
-		//Если мы нашли блоки без id и this_id(id сети, в которой состоит блок выщвавший checkAround)
+		//Р•СЃР»Рё РјС‹ РЅР°С€Р»Рё Р±Р»РѕРєРё Р±РµР· id Рё this_id(id СЃРµС‚Рё, РІ РєРѕС‚РѕСЂРѕР№ СЃРѕСЃС‚РѕРёС‚ Р±Р»РѕРє РІС‹С‰РІР°РІС€РёР№ checkAround)
 		if(!no_ids.isEmpty() && this_id != -1) {
 			for (int i = 0; i < no_ids_arr.length; i++) {
 				NetworkParticipantTile participant = no_ids_arr[i];
 				boolean generator_child = participant.hasCapability(EnergyGeneratorCapability.ENERGY_GENERATOR, null);
 				boolean storage_child = participant.hasCapability(EnergyStorageCapability.ENERGY_STORAGE, null);
 				
-				//Добавляем в сеть если генератор/хранилище
+				//Р”РѕР±Р°РІР»СЏРµРј РІ СЃРµС‚СЊ РµСЃР»Рё РіРµРЅРµСЂР°С‚РѕСЂ/С…СЂР°РЅРёР»РёС‰Рµ
 				if(generator_child || storage_child && list != null) {
 					list.getNetwork(this_id).add(participant.getPos());
 				}
-				//Запускаем установку id т.к. за этим блоком могут быть еще блоки с отсутствующим id
+				//Р—Р°РїСѓСЃРєР°РµРј СѓСЃС‚Р°РЅРѕРІРєСѓ id С‚.Рє. Р·Р° СЌС‚РёРј Р±Р»РѕРєРѕРј РјРѕРіСѓС‚ Р±С‹С‚СЊ РµС‰Рµ Р±Р»РѕРєРё СЃ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰РёРј id
 				setNetworkId(world, participant.getPos(), this_id);
 				participant.setNetworkId(this_id);
 			}
@@ -282,14 +282,14 @@ public class EnergyNetworkUtil {
 	}
 	/**
 	 * 
-	 * @param world Мир
-	 * @param start Стартовая позиция
-	 * @return Возвращает найденных участников
+	 * @param world РњРёСЂ
+	 * @param start РЎС‚Р°СЂС‚РѕРІР°СЏ РїРѕР·РёС†РёСЏ
+	 * @return Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅР°Р№РґРµРЅРЅС‹С… СѓС‡Р°СЃС‚РЅРёРєРѕРІ
 	 */
 	public static HashSet<BlockPos> checkNetwork(World world, BlockPos start) {
 		
-		/* <Так же как и в buildNetwork>
-		 * (за исключением того, что мы просто возвращаем найденных участников, а не создаем ииз них сеть)  */
+		/* <РўР°Рє Р¶Рµ РєР°Рє Рё РІ buildNetwork>
+		 * (Р·Р° РёСЃРєР»СЋС‡РµРЅРёРµРј С‚РѕРіРѕ, С‡С‚Рѕ РјС‹ РїСЂРѕСЃС‚Рѕ РІРѕР·РІСЂР°С‰Р°РµРј РЅР°Р№РґРµРЅРЅС‹С… СѓС‡Р°СЃС‚РЅРёРєРѕРІ, Р° РЅРµ СЃРѕР·РґР°РµРј РёРёР· РЅРёС… СЃРµС‚СЊ)  */
 		HashSet<BlockPos> checked = new HashSet<>(); 
 		HashSet<BlockPos> participants = new HashSet<>();
 		ArrayDeque<BlockPos> queue = new ArrayDeque<>(100);
@@ -312,9 +312,9 @@ public class EnergyNetworkUtil {
 					participants.add(nPos);
 				}
 			}
-			for (EnumFacing face : EnumFacing.VALUES) {//Циклом прогоняемся по всем возможным "направлением"(не знаю как лучше перевести
-				BlockPos child = nPos.offset(face);//эта функция возвращает позицию со сдвигом в данном направлении
-				TileEntity tileEntity = world.getTileEntity(child);//получаем тайл
+			for (EnumFacing face : EnumFacing.VALUES) {//Р¦РёРєР»РѕРј РїСЂРѕРіРѕРЅСЏРµРјСЃСЏ РїРѕ РІСЃРµРј РІРѕР·РјРѕР¶РЅС‹Рј "РЅР°РїСЂР°РІР»РµРЅРёРµРј"(РЅРµ Р·РЅР°СЋ РєР°Рє Р»СѓС‡С€Рµ РїРµСЂРµРІРµСЃС‚Рё
+				BlockPos child = nPos.offset(face);//СЌС‚Р° С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїРѕР·РёС†РёСЋ СЃРѕ СЃРґРІРёРіРѕРј РІ РґР°РЅРЅРѕРј РЅР°РїСЂР°РІР»РµРЅРёРё
+				TileEntity tileEntity = world.getTileEntity(child);//РїРѕР»СѓС‡Р°РµРј С‚Р°Р№Р»
 				boolean generator_child = false;
 				boolean storage_child = false;
 				if(!checked.contains(child)) {
@@ -341,7 +341,7 @@ public class EnergyNetworkUtil {
 				}
 			}
 		}
-		/* </Так же как и в buildNetwork> */
+		/* </РўР°Рє Р¶Рµ РєР°Рє Рё РІ buildNetwork> */
 		return participants;
 	}
 	
@@ -364,9 +364,9 @@ public class EnergyNetworkUtil {
 		return -1;
 	}
 	/**
-	 * Этот метод проверяет есть ли в where элементы what
-	 * @param where HashSet, в котором будет проверяться наличие элементов what
-	 * @param what HashSet, в элементы которого будут проверяться на наличие в what 
+	 * Р­С‚РѕС‚ РјРµС‚РѕРґ РїСЂРѕРІРµСЂСЏРµС‚ РµСЃС‚СЊ Р»Рё РІ where СЌР»РµРјРµРЅС‚С‹ what
+	 * @param where HashSet, РІ РєРѕС‚РѕСЂРѕРј Р±СѓРґРµС‚ РїСЂРѕРІРµСЂСЏС‚СЊСЃСЏ РЅР°Р»РёС‡РёРµ СЌР»РµРјРµРЅС‚РѕРІ what
+	 * @param what HashSet, РІ СЌР»РµРјРµРЅС‚С‹ РєРѕС‚РѕСЂРѕРіРѕ Р±СѓРґСѓС‚ РїСЂРѕРІРµСЂСЏС‚СЊСЃСЏ РЅР° РЅР°Р»РёС‡РёРµ РІ what 
 	 * @return true/false
 	 */
 	public static  boolean contains(HashSet<BlockPos> where, HashSet<BlockPos> what) {
@@ -387,7 +387,7 @@ public class EnergyNetworkUtil {
 		}
 		return true;
 	}
-	//В метод breakBlock у блока
+	//Р’ РјРµС‚РѕРґ breakBlock Сѓ Р±Р»РѕРєР°
 	public static void breakBlock(World worldIn,BlockPos pos) {
 		EnergyNetworkList list = EnergyNetworkUtil.getEnergyNetworkList(worldIn);
 		
@@ -400,7 +400,7 @@ public class EnergyNetworkUtil {
 				if(participant.hasNetworkId()) {
 					EnergyNetwork network = list.getNetwork(participant.getNetworkId());
 					
-					if(network != null) {// не забыть
+					if(network != null) {// РЅРµ Р·Р°Р±С‹С‚СЊ
 						network.remove(participant.getPos());
 						if(!network.hasGenerators(worldIn)){
 							list.removeNetwork(participant.getNetworkId());
@@ -413,9 +413,9 @@ public class EnergyNetworkUtil {
 			}
 		}
 	}
-	// в breakBlock
+	// РІ breakBlock
 	public static void breakWire(World worldIn,BlockPos pos) {
-		//Сюда мы сохраним подсети, получившиеся в результате того, что мы с ломали провод
+		//РЎСЋРґР° РјС‹ СЃРѕС…СЂР°РЅРёРј РїРѕРґСЃРµС‚Рё, РїРѕР»СѓС‡РёРІС€РёРµСЃСЏ РІ СЂРµР·СѓР»СЊС‚Р°С‚Рµ С‚РѕРіРѕ, С‡С‚Рѕ РјС‹ СЃ Р»РѕРјР°Р»Рё РїСЂРѕРІРѕРґ
 		HashMap<BlockPos,EnergyNetwork> posses = new HashMap();
 		int networkId = -1;
 		EnergyNetwork network = null;
@@ -436,19 +436,19 @@ public class EnergyNetworkUtil {
 				
 				NetworkParticipantTile participant = (NetworkParticipantTile) tileEntity;
 				
-				//Получив tile мы проверяем, что у него есть id
+				//РџРѕР»СѓС‡РёРІ tile РјС‹ РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ Сѓ РЅРµРіРѕ РµСЃС‚СЊ id
 				if(participant.hasNetworkId()) {
 					boolean check = false;
 					if(network != null && network.getParticipants() != null) {
 						
-						//С помощью метода checkNetwork проверяем какие есть участники сети(генераторы/хранилища)
+						//РЎ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґР° checkNetwork РїСЂРѕРІРµСЂСЏРµРј РєР°РєРёРµ РµСЃС‚СЊ СѓС‡Р°СЃС‚РЅРёРєРё СЃРµС‚Рё(РіРµРЅРµСЂР°С‚РѕСЂС‹/С…СЂР°РЅРёР»РёС‰Р°)
 						HashSet<BlockPos> sub_network = checkNetwork(worldIn, p);
-						//С помощью метода contains проверяем есть ли в этой подчети все участники родительской
+						//РЎ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґР° contains РїСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё РІ СЌС‚РѕР№ РїРѕРґС‡РµС‚Рё РІСЃРµ СѓС‡Р°СЃС‚РЅРёРєРё СЂРѕРґРёС‚РµР»СЊСЃРєРѕР№
 						check = contains(sub_network, network.getParticipants());
 						
-						//Если нет, то мы должны поместить эту сеть в список подсетей
-						//Перед этим проверив, есть ли подсети с такими же участниками
-						//Так мы избавимся от дубликатов
+						//Р•СЃР»Рё РЅРµС‚, С‚Рѕ РјС‹ РґРѕР»Р¶РЅС‹ РїРѕРјРµСЃС‚РёС‚СЊ СЌС‚Сѓ СЃРµС‚СЊ РІ СЃРїРёСЃРѕРє РїРѕРґСЃРµС‚РµР№
+						//РџРµСЂРµРґ СЌС‚РёРј РїСЂРѕРІРµСЂРёРІ, РµСЃС‚СЊ Р»Рё РїРѕРґСЃРµС‚Рё СЃ С‚Р°РєРёРјРё Р¶Рµ СѓС‡Р°СЃС‚РЅРёРєР°РјРё
+						//РўР°Рє РјС‹ РёР·Р±Р°РІРёРјСЃСЏ РѕС‚ РґСѓР±Р»РёРєР°С‚РѕРІ
 						if(!check) {
 							boolean equal_check = false;
 							Iterator<Map.Entry<BlockPos, EnergyNetwork>> iterator = posses.entrySet().iterator();
@@ -463,7 +463,7 @@ public class EnergyNetworkUtil {
 									break;
 								}
 							}
-							//Если сеть не совпадает ни с одной из ранее найденных, то добавляем ее
+							//Р•СЃР»Рё СЃРµС‚СЊ РЅРµ СЃРѕРІРїР°РґР°РµС‚ РЅРё СЃ РѕРґРЅРѕР№ РёР· СЂР°РЅРµРµ РЅР°Р№РґРµРЅРЅС‹С…, С‚Рѕ РґРѕР±Р°РІР»СЏРµРј РµРµ
 							if(!equal_check) {
 								EnergyNetwork energyNetwork = new EnergyNetwork();
 								energyNetwork.setParticipants(sub_network);
@@ -478,21 +478,21 @@ public class EnergyNetworkUtil {
 		}
 		
 		if(!posses.isEmpty() && networkId != -1) {
-			//Удаляем главную сеть
+			//РЈРґР°Р»СЏРµРј РіР»Р°РІРЅСѓСЋ СЃРµС‚СЊ
 			list.removeNetwork(networkId);
 			Iterator<Map.Entry<BlockPos, EnergyNetwork>> iterator = posses.entrySet().iterator();
 			while (iterator.hasNext()) {
 				Map.Entry<BlockPos, EnergyNetwork> entry = iterator.next();
 				EnergyNetwork nEnergyNetwork = entry.getValue();
 				
-				//Если подсеть имеет генераторы, значит мы можем ее добавить в список сетей
+				//Р•СЃР»Рё РїРѕРґСЃРµС‚СЊ РёРјРµРµС‚ РіРµРЅРµСЂР°С‚РѕСЂС‹, Р·РЅР°С‡РёС‚ РјС‹ РјРѕР¶РµРј РµРµ РґРѕР±Р°РІРёС‚СЊ РІ СЃРїРёСЃРѕРє СЃРµС‚РµР№
 				if(nEnergyNetwork.hasGenerators(worldIn)) {
 					int id = list.addNetwork(nEnergyNetwork);
-					//выставляем id от ранее найденной стартовой позиции
+					//РІС‹СЃС‚Р°РІР»СЏРµРј id РѕС‚ СЂР°РЅРµРµ РЅР°Р№РґРµРЅРЅРѕР№ СЃС‚Р°СЂС‚РѕРІРѕР№ РїРѕР·РёС†РёРё
 					BlockPos start = entry.getKey();
 					EnergyNetworkUtil.setNetworkId(worldIn, start, id);
 				}
-				else {//Если сеть не имеет генераторов - мы просто ставим id -1
+				else {//Р•СЃР»Рё СЃРµС‚СЊ РЅРµ РёРјРµРµС‚ РіРµРЅРµСЂР°С‚РѕСЂРѕРІ - РјС‹ РїСЂРѕСЃС‚Рѕ СЃС‚Р°РІРёРј id -1
 					BlockPos start = entry.getKey();
 					EnergyNetworkUtil.setNetworkId(worldIn, start, -1);
 				}
